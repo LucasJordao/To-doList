@@ -6,6 +6,16 @@ class UserController{
   async store(req, res){
 
     const { email } = req.body;
+    const { userId } = req;
+
+// Verificando qual usuário quer criar uma conta nova (Acesso apenas para Providers)
+    const checkId = await User.findOne({
+      where: {id: userId, provider: true}
+    })
+
+    if(!checkId){
+      return res.status(401).json({error: "You don't have permission!"});
+    }
 
 // Verificar se já existe usuário com esse email
 
@@ -24,7 +34,6 @@ class UserController{
     const { name, password_hash, provider } = await User.create(req.body);
 
     return res.json({
-      token: req.userId,
       name,
       email,
       password_hash,
