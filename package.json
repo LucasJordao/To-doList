@@ -9,7 +9,10 @@
   "author": "Lucas William <59783795+LucasJordao@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pg": "^8.0.3",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.21.7"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
