@@ -1,6 +1,10 @@
 const express = require('express');
 const routes = require('./routes');
 
+// Aqui estanciamos a classe responsável pela conexão ao database
+
+require('./database/index');
+
 class App{
   
 // Quando a classe for instanciada ela vai chamar o constructor lançando todas as outras funções
