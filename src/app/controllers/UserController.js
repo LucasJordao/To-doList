@@ -24,11 +24,17 @@ class UserController{
     const { name, password_hash, provider } = await User.create(req.body);
 
     return res.json({
+      token: req.userId,
       name,
       email,
       password_hash,
       provider
     })
+
+  }
+
+// Index - método 
+  async index(req, res){
 
   }
 }

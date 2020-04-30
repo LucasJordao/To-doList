@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const tokenValidation = require('./app/middlewares/tokenValidation');
 
 // Aqui fica todas as importações dos controllers
 const UserController = require('./app/controllers/UserController');
@@ -11,8 +12,15 @@ const routes = Router();
 // Aqui ficará todas as rotas definida
 
 // Rotas POST sem JWT
-routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+
+// Middleware responsável por validar token jwt
+routes.use(tokenValidation);
+
+// Rotas POST com JWT
+routes.post('/users', UserController.store);
+
+
 
 
 module.exports = routes;

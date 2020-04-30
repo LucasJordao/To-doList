@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const authToken = require('../../config/authToken');
 
 // Esse controller é responsável pelo "login" do usuário
 class SessionController{
@@ -16,7 +18,16 @@ class SessionController{
       return res.status(401).json({error: "This password is invalid!"});
     }
 
-    return res.json(user);
+    const { name, id } = user; 
+
+    return res.json({
+      name,
+      id,
+// Esse será o token para acesso de algumas rotas específicas
+      token: jwt.sign({id}, authToken.secret, {
+        expiresIn: authToken.expiresIn,
+      })
+    });
   }
 }
 
