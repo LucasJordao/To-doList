@@ -1,7 +1,8 @@
 const Task = require('../models/Task');
 const User = require('../models/User');
+const Notification = require('../schemas/Notification');
 const yup = require('yup');
-const { isBefore, parseISO, startOfHour } = require('date-fns');
+const { isBefore, parseISO, startOfHour, format } = require('date-fns');
 
 class TaskController{
   async store(req, res){
@@ -64,7 +65,19 @@ class TaskController{
 // Se caso der certo então pode criar
 
   const task = await Task.create(req.body);
-  console.log(req.body.content);
+
+// Criando uma notificação informando que uma tarefa foi gerada
+  const formatteDate = format(
+    hourStart,
+    "dd'/'MM'/'yyyy"
+  );
+
+  await Notification.create({
+    content: `Nova tarefa criada com data da prazo: ${formatteDate}`,
+    provider: userId,
+    employee: employee_id,
+  })
+
   return res.json(task);
 
   }

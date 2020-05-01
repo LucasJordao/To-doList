@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const configDatabase = require('../config/database');
+const mongoose = require('mongoose');
 
 // Importação dos models para receberem a conexão com o database
 const User = require('../app/models/User');
@@ -13,6 +14,7 @@ class Database{
 
   constructor(){
     this.init();
+    this.mongo();
   }
 
 // O método init será responsável por fazer a conexão do postgres e passar para os models, também faráas associações 
@@ -24,6 +26,18 @@ class Database{
       .map(model => model.init(this.connection))
       .map(model => model.associate && model.associate(this.connection.models));
   }
+
+  mongo(){
+    this.mongoConnection = mongoose.connect(
+      'mongodb://192.168.99.100:27017/catrix',
+      {
+        useNewUrlParser: true,
+        useFindAndModify: true,
+        useUnifiedTopology: true,
+      }
+    );
+  }
+
 }
 
 module.exports = new Database();
