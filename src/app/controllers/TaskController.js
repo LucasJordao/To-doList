@@ -1,6 +1,7 @@
 const Task = require('../models/Task');
 const User = require('../models/User');
 const yup = require('yup');
+const { isBefore, parseISO, startOfHour } = require('date-fns');
 
 class TaskController{
   async store(req, res){
@@ -53,6 +54,12 @@ class TaskController{
   }
 
 
+// Verificar se a data informada já passou
+  const hourStart = startOfHour(parseISO(req.body.date));
+
+  if(isBefore(hourStart, new Date())){
+    return res.status(400).json({error: 'Past dates are not permitted'});
+  }
 
 // Se caso der certo então pode criar
 
