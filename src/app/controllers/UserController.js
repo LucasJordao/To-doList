@@ -54,6 +54,34 @@ class UserController{
 
     return res.json(users);
   }
+
+// Update - método de atualizar
+  async update(req, res){
+    
+    const { userId } = req;
+    const { email } = req.body;
+
+// Verificar qual usuário quer fazer atualização
+    const user = await User.findByPk(userId);
+
+// Verificar se o email que ele informou já está sendo usado
+    if(email && email != user.email){
+      if(await User.findOne({where: {email}})){
+        return res.status(400).json({error: "Email is not valid"});
+      }
+    }
+
+// Fazer atualização
+    const {id, name, provider} = await user.update(req.body);
+
+    return res.json({
+      id,
+      name,
+      provider
+    });
+  }
 }
+
+
 
 module.exports = new UserController();

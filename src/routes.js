@@ -23,6 +23,8 @@ routes.post('/users', UserController.store);
 // Rotas GET com JWT
 routes.get('/users', UserController.index);
 
+// Rotas UPDATE com JWT
+routes.put('/users', UserController.update);
 
 
 
