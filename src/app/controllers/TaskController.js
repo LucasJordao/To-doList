@@ -61,6 +61,153 @@ class TaskController{
   return res.json(task);
 
   }
+
+  async index(req, res){
+
+    const { page = 1} = req.query;
+    const { userId } = req;
+
+// percisamos certificar-se de quem está querendo a lista
+    const checkUser = await User.findOne({
+      where: {
+        id: userId,
+        provider: true,
+        valid: true
+      }
+    });
+
+// verificaremos se é um employee
+    if(!checkUser){
+      const tasks = await Task.findAll({
+        where: {
+          employee_id: userId,
+          canceled: null,
+          concluded: false,
+        },
+        order: [['date', 'DESC']],
+        limit: 20,
+        offset: (page - 1) * 20,
+        include: [
+          {
+            model: User,
+            as: 'provider',
+            attributes: ['id', 'name', 'email', 'avatar_id'],
+          }, 
+          {
+            model: User,
+            as: 'employee',
+            attributes: ['id', 'name', 'email', 'avatar_id'],
+          },
+        ]
+      });
+
+      return res.json(tasks);
+    }
+
+// Se caso for um provider
+    const tasks = await Task.findAll({
+      where: {
+        provider_id: userId,
+        canceled: null,
+      },
+      order: [['date', 'DESC']],
+      limit: 20,
+      offset: (page - 1) * 20,
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['id', 'name', 'email', 'avatar_id'],
+        }, 
+        {
+          model: User,
+          as: 'employee',
+          attributes: ['id', 'name', 'email', 'avatar_id'],
+        },
+      ]
+    });
+
+    return res.json(tasks);
+
+  }
+
+  async update(req, res){
+
+    const { id } = req.params;
+    const { userId } = req;
+
+// Consultar quem quer editar a tarefa
+
+    const isProvider = await User.findOne({
+      where:{
+        id: userId,
+        provider: true,
+        valid: true,
+      }
+    });
+
+    if(!isProvider){
+      return res.status(401).json({error: "Sorry! You have not permission"});
+    }
+
+// Identificar qual atividade editar
+
+    const task = await Task.findOne({
+      where: {
+        id,
+        concluded: false,
+        canceled: null
+      }
+    });
+
+    if(!task){
+      return res.status(401).json({error: "Task invalid"});
+    }
+
+// Atualizar se caso passe
+
+    const update = await task.update(req.body);
+
+    return res.json(update);
+  }
+
+  async delete(req, res){
+
+    const { userId } = req;
+    const { id } = req.params;
+// Verificar se é um provider tentando deletar
+
+    const isProvider = await User.findOne({
+      where: {
+        id: userId,
+        provider: true,
+        valid: true,
+      }
+    });
+
+    if(!isProvider){
+      return res.status(401).json({error: "You have not permission"});
+    }
+
+// Verificar se a tarefa ainda está no ar
+    const task = await Task.findOne({
+      where: {
+        id, 
+        canceled: null,
+      }
+    });
+
+    if(!task){
+      return res.status(400).json({error: "Invalid task"});
+    }
+
+// Se ainda estiver pode cancelar
+    task.canceled = new Date();
+    
+    await task.save();
+
+    return res.json(task);
+  }
 }
 
 module.exports = new TaskController();

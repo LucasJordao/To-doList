@@ -11,6 +11,7 @@ class Task extends Model{
       content: Sequelize.STRING,
       concluded: Sequelize.BOOLEAN,
       date: Sequelize.DATE,
+      canceled: Sequelize.DATE,
     },
     {
       sequelize

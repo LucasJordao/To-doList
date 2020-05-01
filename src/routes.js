@@ -30,12 +30,15 @@ routes.post('/tasks', TaskController.store);
 
 // Rotas GET com JWT
 routes.get('/users', UserController.index);
+routes.get('/tasks', TaskController.index);
 
 // Rotas UPDATE com JWT
 routes.put('/users', UserController.update);
+routes.put('/tasks/:id', TaskController.update);
 
 // Rotas DELETE com JWT
 routes.delete('/users/:id', UserController.delete);
+routes.delete('/tasks/:id', TaskController.delete);
 
 
 module.exports = routes;
