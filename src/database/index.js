@@ -4,9 +4,10 @@ const configDatabase = require('../config/database');
 // Importação dos models para receberem a conexão com o database
 const User = require('../app/models/User');
 const File = require('../app/models/File');
+const Task = require('../app/models/Task');
 
 // Array responsável por percorrer os models passando a conexão
-const models = [User, File];
+const models = [User, File, Task];
 
 class Database{
 

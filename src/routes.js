@@ -7,6 +7,7 @@ const multerConfig = require('./config/multer')
 const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');
 const FileController = require('./app/controllers/FileController');
+const TaskController = require('./app/controllers/TaskController');
 
 // Criamos a variável routes armazenando a função Router do express que serve para definirmos rotas
 const routes = Router();
@@ -25,6 +26,7 @@ routes.use(tokenValidation);
 
 // Rotas POST com JWT
 routes.post('/files', upload.single('file'), FileController.store);
+routes.post('/tasks', TaskController.store);
 
 // Rotas GET com JWT
 routes.get('/users', UserController.index);
