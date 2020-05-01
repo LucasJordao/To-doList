@@ -26,6 +26,8 @@ routes.get('/users', UserController.index);
 // Rotas UPDATE com JWT
 routes.put('/users', UserController.update);
 
+// Rotas DELETE com JWT
+routes.delete('/delete/:id', UserController.delete);
 
 
 module.exports = routes;

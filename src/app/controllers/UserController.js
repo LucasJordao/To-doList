@@ -72,13 +72,66 @@ class UserController{
     }
 
 // Fazer atualização
-    const {id, name, provider} = await user.update(req.body);
+    const userUpdate = await user.update(req.body);
+
+// Criei uma nova variável email para não haver conflito
+    const newEmail = userUpdate.email;
+
+// Aqui fiz a destruturização
+    const {id, name, provider} = userUpdate;
 
     return res.json({
       id,
       name,
+      newEmail,
       provider
     });
+  }
+
+// Delete - método para deletar
+  async delete(req, res){
+    
+    const { userId } = req;
+    const { id } = req.params;
+
+// Verificar se quem está deletando é um chefe (Provider)
+    const provider = await User.findOne({
+      where:{
+        id: userId,
+        provider: true,
+        valid: true,
+      }
+    });
+
+    if(!provider){
+      return res.status(401).json({error: "You have not permission!"});
+    }
+
+// Verificar se foi informado um funcionário (Employee) existente
+    const employee = await User.findOne({
+      where: {id, valid: true}
+    });
+
+
+    if(!employee){
+      return res.status(400).json({error: "User not found"});
+    }
+
+// Verificar se  está tentando deletar outro provider
+    if(employee.provider){
+      console.log(provider.id);
+      console.log(employee.id);
+      if(!(provider.id == employee.id)){
+        return res.status(401).json({error: "Sorry! This is not permitted!"});
+      }
+    }
+
+// Deletar user (Valid = false)
+    employee.valid = false;
+    await employee.save();
+  
+    return res.json(employee);
+
   }
 }
 
