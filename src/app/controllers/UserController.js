@@ -70,10 +70,26 @@ class UserController{
 // Update - método de atualizar
   async update(req, res){
     
-    const { userId } = req;
-    const { email } = req.body;
+    const schema = yup.object().shape({
+      name: yup.string(),
+      email: yup.string().email(),
+      provider: yup.boolean(),
+      oldPassword: yup.string().min(6),
+      password: yup.string().min(6).when('oldPassword', (oldPassword, field) =>
+        oldPassword ? field.required() : field
+      ),
+      confirmPassword: yup.string().min(6).when('password', (password, field) =>
+        password ? field.required().oneOf([yup.ref('password')]) :  field
+      ),
+    });
+
+    if(!(await schema.isValid(req.body))){
+      return res.status(400).json({error: "Validation fails"});
+    }
 
 // Verificar qual usuário quer fazer atualização
+    const { userId } = req;
+    const { email, oldPassword } = req.body;
     const user = await User.findByPk(userId);
 
 // Verificar se o email que ele informou já está sendo usado
@@ -81,6 +97,11 @@ class UserController{
       if(await User.findOne({where: {email}})){
         return res.status(400).json({error: "Email is not valid"});
       }
+    }
+
+// Verificar se o oldPassword informado é válido
+    if(oldPassword && !(await user.checkPassword(oldPassword))){
+      return res.status(400).json({error: "Password does not match"});
     }
 
 // Fazer atualização
