@@ -20,6 +20,9 @@ routes.use(tokenValidation);
 // Rotas POST com JWT
 routes.post('/users', UserController.store);
 
+// Rotas GET com JWT
+routes.get('/users', UserController.index);
+
 
 
 
