@@ -1,13 +1,25 @@
 const User = require('../models/User');
+const yup = require('yup');
 
 class UserController{
 
 // Store - método responsável por criar novos Usuários (Provider ou Employee)
   async store(req, res){
 
-    const { email } = req.body;
+// Validando os dados com o yup
+
+    const schema = yup.object().shape({
+      name: yup.string().required(),
+      email: yup.string().email().required(),
+      password: yup.string().required().min(6),
+    });
+
+    if(!(await schema.isValid(req.body))){
+      return res.status(400).json({error: "Validation fails"});
+    }
 
 // Verificar se já existe usuário com esse email
+    const { email } = req.body;
 
     const checkEmail = await User.findOne({
       where: {
