@@ -1,5 +1,6 @@
 const express = require('express');
 const routes = require('./routes');
+const { resolve } = require('path');
 
 // Aqui estanciamos a classe responsável pela conexão ao database
 
@@ -18,6 +19,7 @@ class App{
 // Essa função serve para adicionar os middlewares nas rotas
 
   middlewares(){
+    this.server.use('/files', express.static(resolve(__dirname, '..', 'tmp', 'uploads')));
     this.server.use(express.json());
   }
 

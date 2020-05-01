@@ -34,6 +34,11 @@ class User extends Model{
     return bcryptjs.compare(password, this.password_hash);
   }
 
+// Esse método serve para fazer o relacionamento entre tabelas, nesse caso vamos relacionar a tabela files com a users
+  static associate(models){
+    this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar'});
+  }
+
 }
 
 module.exports = User;

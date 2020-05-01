@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const File = require('../models/File');
 const yup = require('yup');
 
 class UserController{
@@ -56,13 +57,35 @@ class UserController{
 
 // Se for um provider
     if(user){
-      const users = await User.findAll({where: {provider: false, valid: true}});
+      const users = await User.findAll({
+        where: {
+          provider: false,
+          valid: true
+        },
+        attributes: ['id', 'name', 'email', 'avatar_id'],
+        include: [{
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url']
+        }]
+      });
 
       return res.json(users);
     }
 
 // Se for um employee
-    const users = await User.findAll({where: {provider: true, valid: true}});
+    const users = await User.findAll({
+      where: {
+        provider: true,
+        valid: true
+      },
+      attributes: ['id', 'name', 'email', 'avatar_id'],
+      include: [{
+        model: File,
+        as: 'avatar',
+        attributes: ['name', 'path', 'url']
+      }]
+    });
 
     return res.json(users);
   }
