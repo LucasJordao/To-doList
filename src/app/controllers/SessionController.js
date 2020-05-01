@@ -1,15 +1,27 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const authToken = require('../../config/authToken');
+const yup = require('yup');
 
 // Esse controller é responsável pelo "login" do usuário
 class SessionController{
   async store(req, res){
 
+// Validando dados com yup
+    const schema = yup.object().shape({
+      email: yup.string().email().required(),
+      password: yup.string().required(),
+    });
+
+    if(!(await schema.isValid(req.body))){
+      return res.status(400).json({error: "Validations failed"});
+    }
+
+
+// Verificando se o email existe
     const { email, password } = req.body;
     const user = await User.findOne({where: {email, valid: true}});
 
-// Verificando se o email existe
     if(!user){
       return res.status(400).json({error: "User does not exists!"})
     }
