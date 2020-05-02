@@ -184,8 +184,13 @@ class TaskController{
       return res.status(401).json({error: "Task invalid"});
     }
 
-// Atualizar se caso passe
+// Verificando se quem quer editar é o mesmo que criou a tarefa
 
+    if(userId != task.employee_id){
+      return res.status(400).json({error: "You have not permitted"});
+    }
+
+// Atualizar se caso passe
     const update = await task.update(req.body);
 
     return res.json(update);
@@ -221,10 +226,30 @@ class TaskController{
       return res.status(400).json({error: "Invalid task"});
     }
 
+
+// Verificando se quem quer deletar é o mesmo que criou
+
+    if(userId != task.provider_id){
+      return res.status(401).json({error: "You have not permission"});
+    }
+
 // Se ainda estiver pode cancelar
     task.canceled = new Date();
-    
+
     await task.save();
+
+// Enviando notificação para o employee informando que a tarefa foi cancelada
+    const formatteDate = format(
+      new Date(),
+      "dd-MM-yyyy"
+    )
+
+
+    await Notification.create({
+      content: `A tarefa, ${task.title}, foi cancelada no dia: ${formatteDate}`,
+      employee: task.employee_id,
+      provider: userId,
+    })
 
     return res.json(task);
   }

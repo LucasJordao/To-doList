@@ -8,6 +8,7 @@ const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');
 const FileController = require('./app/controllers/FileController');
 const TaskController = require('./app/controllers/TaskController');
+const ConcludedController = require('./app/controllers/ConcludedController');
 
 // Criamos a variável routes armazenando a função Router do express que serve para definirmos rotas
 const routes = Router();
@@ -35,6 +36,7 @@ routes.get('/tasks', TaskController.index);
 // Rotas UPDATE com JWT
 routes.put('/users', UserController.update);
 routes.put('/tasks/:id', TaskController.update);
+routes.put('/concludeds/:id', ConcludedController.update);
 
 // Rotas DELETE com JWT
 routes.delete('/users/:id', UserController.delete);

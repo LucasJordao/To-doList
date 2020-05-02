@@ -27,6 +27,9 @@ class Database{
       .map(model => model.associate && model.associate(this.connection.models));
   }
 
+  /**
+   * @function mongo - Essa função irá fazer a conexão do banco mongo usando o mongoose
+   */
   mongo(){
     this.mongoConnection = mongoose.connect(
       'mongodb://192.168.99.100:27017/catrix',

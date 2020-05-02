@@ -28,13 +28,18 @@ class User extends Model{
 
     return this;
   }
-
-// Método para fazer a comparação entre senhas. Vai ser usado em tentativas de acesso a conta do usuário
+  /**
+   * 
+   * @function checkPassword - Ela receberá um password no qual será validado apartir do compare do bcrypjs
+   */
   checkPassword(password){
     return bcryptjs.compare(password, this.password_hash);
   }
 
-// Esse método serve para fazer o relacionamento entre tabelas, nesse caso vamos relacionar a tabela files com a users
+  /**
+  * @function  associate - O associate usa o belongsTo para fazer o relacionamento entre tabelas
+  * 
+  */
   static associate(models){
     this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar'});
   }
