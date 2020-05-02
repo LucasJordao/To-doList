@@ -2,6 +2,8 @@ const Task = require('../models/Task');
 const User = require('../models/User');
 const Notification = require('../schemas/Notification');
 const yup = require('yup');
+const {resolve} = require('path');
+const Mail = require('../../lib/Mail');
 const { isBefore, parseISO, startOfHour, format } = require('date-fns');
 
 class TaskController{
@@ -219,7 +221,13 @@ class TaskController{
       where: {
         id, 
         canceled: null,
-      }
+      },
+      include: [
+        {
+          model: User,
+          as: 'employee',
+        },
+      ]
     });
 
     if(!task){
@@ -249,6 +257,27 @@ class TaskController{
       content: `A tarefa, ${task.title}, foi cancelada no dia: ${formatteDate}`,
       receive: task.employee_id,
       send: userId,
+    });
+
+// enviando email informando que a tarefa foi cancelada
+    await Mail.sendMail({
+      to: `${task.employee.name} <${task.employee.email}>`,
+      subject: 'Tarefa Cancelada',
+      template: 'cancellation',
+      context: {
+        provider: isProvider.name,
+        email: isProvider.email,
+        task: task.title,
+        date: formatteDate,
+        employee: task.employee.name,
+      },
+      attachments: [
+        {
+          filename: 'CatrixIcon.png',
+          path: resolve(__dirname, '..', 'views', 'emails', 'img','CatrixIcon.png'),
+          cid: 'icon'
+        },
+      ]
     })
 
     return res.json(task);
