@@ -5,7 +5,7 @@ const NotificationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  provider: {
+  send: {
     type: Number,
     required: true,
   },
@@ -14,7 +14,7 @@ const NotificationSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
-  employee: {
+  receive: {
     type: Number,
     required: true,
   }

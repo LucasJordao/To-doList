@@ -74,8 +74,8 @@ class TaskController{
 
   await Notification.create({
     content: `Nova tarefa criada com data da prazo: ${formatteDate}`,
-    provider: userId,
-    employee: employee_id,
+    send: userId,
+    receive: employee_id,
   })
 
   return res.json(task);
@@ -247,8 +247,8 @@ class TaskController{
 
     await Notification.create({
       content: `A tarefa, ${task.title}, foi cancelada no dia: ${formatteDate}`,
-      employee: task.employee_id,
-      provider: userId,
+      receive: task.employee_id,
+      send: userId,
     })
 
     return res.json(task);

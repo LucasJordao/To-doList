@@ -56,8 +56,8 @@ class ConcludedController{
 
     await Notification.create({
       content: `A tarefa, ${task.title}, foi concluida no dia: ${formatteDate}`,
-      provider: task.provider_id,
-      employee: userId,
+      receive: task.provider_id,
+      send: userId,
     });
 
     return res.json(task);
