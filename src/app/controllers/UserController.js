@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const File = require('../models/File');
 const yup = require('yup');
+const Queue = require('../../lib/Queue');
+const CreateUserMail = require('../jobs/CreateUserMail');
 
 class UserController{
 
@@ -34,13 +36,16 @@ class UserController{
 
 // Caso a verificação passe, criamos o usuário
 
-    const { name, password_hash, provider } = await User.create(req.body);
+    const user = await User.create(req.body);
+
+// Enviando email de boas vindas
+    await Queue.add(CreateUserMail.key, {user});
+
 
     return res.json({
-      name,
+      name: user.name,
       email,
-      password_hash,
-      provider
+      provider: user.provider
     })
 
   }

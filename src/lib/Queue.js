@@ -3,9 +3,10 @@ const redisConfig = require('../config/redis');
 
 // Jobs que entrão para a fila
 const CancellationMail = require('../app/jobs/CancellationMail');
+const CreateUserMail = require('../app/jobs/CreateUserMail');
 
 // Lista de jobs
-const jobs = [CancellationMail];
+const jobs = [CancellationMail, CreateUserMail];
 
 class Queue{
   constructor(){
