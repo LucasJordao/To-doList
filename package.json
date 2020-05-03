@@ -10,10 +10,13 @@
   "author": "Lucas William <59783795+LucasJordao@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "5.15.5",
     "bcryptjs": "^2.4.3",
     "bee-queue": "^1.2.3",
+    "cors": "^2.8.5",
     "date-fns": "^2.0.0-beta.5",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.11",
     "multer": "^1.4.2",
@@ -21,6 +24,7 @@
     "pg": "^8.0.3",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.7",
+    "youch": "^2.0.10",
     "yup": "^0.28.5"
   },
   "devDependencies": {

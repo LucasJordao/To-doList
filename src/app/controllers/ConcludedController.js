@@ -2,6 +2,8 @@ const User = require('../models/User');
 const Task = require('../models/Task');
 const Notification = require('../schemas/Notification');
 const { format } = require('date-fns');
+const Queue = require('../../lib/Queue');;
+const ConcludedTaskMail = require('../jobs/ConcludedTaskMail');
 
 // Classe criada para implementar o update na rota no qual terá como função concluir uma task
 class ConcludedController{
@@ -29,7 +31,19 @@ class ConcludedController{
         id,
         concluded: false,
         canceled: null,
-      }
+      },
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'email']
+        },
+        {
+          model: User,
+          as: 'employee',
+          attributes: ['name', 'email']
+        }
+      ]
     });
 
     if(!task){
@@ -59,6 +73,9 @@ class ConcludedController{
       receive: task.provider_id,
       send: userId,
     });
+
+// Enviar email informando que a tarefa foi concluida
+    await Queue.add(ConcludedTaskMail.key, {task});
 
     return res.json(task);
   }

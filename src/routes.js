@@ -3,6 +3,7 @@ const tokenValidation = require('./app/middlewares/tokenValidation');
 const multer = require('multer');
 const multerConfig = require('./config/multer')
 
+
 // Aqui fica todas as importações dos controllers
 const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');

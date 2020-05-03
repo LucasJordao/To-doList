@@ -2,10 +2,14 @@ const Task = require('../models/Task');
 const User = require('../models/User');
 const Notification = require('../schemas/Notification');
 const yup = require('yup');
+const { isBefore, parseISO, startOfHour, format } = require('date-fns');
 const {resolve} = require('path');
 const Queue = require('../../lib/Queue');
+
+//Importação dos jobs para background job
 const CancellationMail = require('../jobs/CancellationMail');
-const { isBefore, parseISO, startOfHour, format } = require('date-fns');
+const NewTaskMail = require('../jobs/NewTaskMail');
+
 
 class TaskController{
   async store(req, res){
@@ -81,6 +85,9 @@ class TaskController{
     receive: employee_id,
   })
 
+// eviar email informando que uma nova tarefa foi criada
+  await Queue.add(NewTaskMail.key, {task, checkEmployee, checkProvider});
+
   return res.json(task);
 
   }
@@ -121,7 +128,8 @@ class TaskController{
             as: 'employee',
             attributes: ['id', 'name', 'email', 'avatar_id'],
           },
-        ]
+        ],
+        attributes: ['id', 'title', 'content', 'past', 'date', 'canceled', 'concluded'],
       });
 
       return res.json(tasks);
@@ -147,7 +155,8 @@ class TaskController{
           as: 'employee',
           attributes: ['id', 'name', 'email', 'avatar_id'],
         },
-      ]
+      ],
+      attributes: ['id', 'title', 'content', 'past', 'date', 'canceled', 'concluded'],
     });
 
     return res.json(tasks);

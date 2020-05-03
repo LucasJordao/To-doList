@@ -1,5 +1,5 @@
 const { Model, Sequelize } = require('sequelize');
-
+const { isBefore } = require('date-fns');
 // Model de tarefas
 
 class Task extends Model{
@@ -12,6 +12,12 @@ class Task extends Model{
       concluded: Sequelize.BOOLEAN,
       date: Sequelize.DATE,
       canceled: Sequelize.DATE,
+      past:  {
+        type: Sequelize.VIRTUAL,
+        get(){
+          return isBefore(this.date, new Date());
+        }
+      }
     },
     {
       sequelize

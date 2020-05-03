@@ -4,9 +4,11 @@ const redisConfig = require('../config/redis');
 // Jobs que entrão para a fila
 const CancellationMail = require('../app/jobs/CancellationMail');
 const CreateUserMail = require('../app/jobs/CreateUserMail');
+const ConcludedTaskMail = require('../app/jobs/ConcludedTaskMail');
+const NewTaskMail = require('../app/jobs/NewTaskMail');
 
 // Lista de jobs
-const jobs = [CancellationMail, CreateUserMail];
+const jobs = [CancellationMail, CreateUserMail, ConcludedTaskMail, NewTaskMail];
 
 class Queue{
   constructor(){
@@ -41,8 +43,12 @@ class Queue{
     jobs.forEach(job => {
       const { bee, handle } = this.queues[job.key];
 
-      bee.process(handle);
+      bee.on('failed', this.handleFailure).process(handle);
     })
+  }
+
+  handleFailure(job, err){
+    console.log(`Queue ${job.queue.name}: FAILED`, err);
   }
 }
 
