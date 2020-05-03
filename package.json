@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server"
+    "dev": "nodemon src/server.js",
+    "queue": "nodemon src/queue.js"
   },
   "repository": "https://github.com/LucasJordao/To-doList.git",
   "author": "Lucas William <59783795+LucasJordao@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bee-queue": "^1.2.3",
     "date-fns": "^2.0.0-beta.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
