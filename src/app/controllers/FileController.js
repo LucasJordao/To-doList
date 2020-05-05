@@ -10,7 +10,7 @@ class FileController{
       name, path
     });
 
-    return res.json({name, path});
+    return res.json({name, path, id: file.id, url: file.url});
   }
 }
 

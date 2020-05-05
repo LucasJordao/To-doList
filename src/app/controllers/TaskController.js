@@ -114,7 +114,7 @@ class TaskController{
           canceled: null,
           concluded: false,
         },
-        order: [['date', 'DESC']],
+        order: [['created_at', 'DESC']],
         limit: 20,
         offset: (page - 1) * 20,
         include: [
@@ -141,7 +141,7 @@ class TaskController{
         provider_id: userId,
         canceled: null,
       },
-      order: [['date', 'DESC']],
+      order: [['created_at', 'DESC']],
       limit: 20,
       offset: (page - 1) * 20,
       include: [
@@ -198,7 +198,7 @@ class TaskController{
 
 // Verificando se quem quer editar é o mesmo que criou a tarefa
 
-    if(userId != task.employee_id){
+    if(userId != task.provider_id){
       return res.status(400).json({error: "You have not permitted"});
     }
 

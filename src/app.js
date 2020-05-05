@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 require('express-async-errors');
 const routes = require('./routes');
@@ -16,7 +18,7 @@ class App{
 
   constructor(){
     this.server = express();
-
+// Aqui iniciamos o sentry
     sentry.init(sentryConfig);
     this.middlewares();
     this.routes();
@@ -26,6 +28,7 @@ class App{
 // Essa função serve para adicionar os middlewares nas rotas
 
   middlewares(){
+// Usamos o requestHandler para a captura dos errors
     this.server.use(sentry.Handlers.requestHandler());
     this.server.use(express.json());
     this.server.use('/files', express.static(resolve(__dirname, '..', 'tmp', 'uploads')));
@@ -35,14 +38,20 @@ class App{
 
   routes(){
     this.server.use(routes);
+// Aqui recuperamos o erro
     this.server.use(sentry.Handlers.errorHandler());
   }
 
+// Criamos a função exception handler para imprimir o erro como json
   exceptionHandler(){
     this.server.use(async (err, req, res, next) => {
-      const errors = await new Youch(err, req).toJSON();
+      if(process.env.NODE_ENV == 'development'){
+        const errors = await new Youch(err, req).toJSON();
 
-      return res.status(500).json(errors);
+        return res.status(500).json(errors);
+      }
+
+      return res.status(500).json({error: 'Internal server error'});
     });
   }
 }

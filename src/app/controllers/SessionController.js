@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const File = require('../models/File');
 const jwt = require('jsonwebtoken');
 const authToken = require('../../config/authToken');
 const yup = require('yup');
@@ -20,7 +21,18 @@ class SessionController{
 
 // Verificando se o email existe
     const { email, password } = req.body;
-    const user = await User.findOne({where: {email, valid: true}});
+    const user = await User.findOne({
+      where: {
+        email, valid: true
+      },
+      include: [
+        {
+          model: File,
+          as: "avatar",
+          attributes: ['id', 'path', 'url', 'name'],
+        },
+      ]
+    });
 
     if(!user){
       return res.status(400).json({error: "User does not exists!"})
@@ -31,11 +43,12 @@ class SessionController{
       return res.status(401).json({error: "This password is invalid!"});
     }
 
-    const { name, id } = user; 
+    const { name, id, avatar } = user; 
 
     return res.json({
       name,
       id,
+      url: avatar.url,
 // Esse será o token para acesso de algumas rotas específicas
       token: jwt.sign({id}, authToken.secret, {
         expiresIn: authToken.expiresIn,
