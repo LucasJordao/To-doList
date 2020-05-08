@@ -20,7 +20,7 @@ class Mail{
   }
 
   /**
-   * @function configureTemplates - Responsável por configurar os templates de email
+   * configureTemplates() - Responsável por configurar os templates de email
    */
   configureTemplates(){
     const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
@@ -36,8 +36,11 @@ class Mail{
       extName: '.hbs',
     }));
   }
-
-// Método responsável por enviar o email
+ /**
+  * 
+  * sendMail Método responsável por enviar o email
+  * @params <Object> message
+  */
   sendMail(message){
     return this.transporter.sendMail({
       ...mailConfig.default,
